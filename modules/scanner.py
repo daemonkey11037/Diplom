@@ -121,7 +121,6 @@ def vuln_search():
                 for row in reader:
                     if service[0].lower() == row[4].lower():
                         vuln.append(row[0])
-                        
     return vuln
 
 def vuln_check(vuln):
