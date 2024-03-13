@@ -24,5 +24,5 @@ def vuln_check2():
         for row in reader:
             print(row)
 
-vuln_check2()
+vuln_check2()#
 

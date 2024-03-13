@@ -6,7 +6,7 @@ import sqlite3
 import re
 import csv
 
-connection = sqlite3.connect('db.db', check_same_thread=False)
+connection = sqlite3.connect('source/db.db', check_same_thread=False)
 cursor = connection.cursor()
 
 reg = '^\d+\.\d+\.\d+\.\d+&'
@@ -110,9 +110,9 @@ def clean():
 
 def vuln_search():
     vuln = []
-    cursor.execute("""SELECT product, version FROM Ports""")
+    cursor.execute("""SELECT product, version, id_hosts FROM Ports""")
     list = cursor.fetchall()
-    with open ('modules/vullist.csv', encoding='utf8') as vullist:
+    with open ('source/vullist.csv', encoding='utf8') as vullist:
         reader = csv.reader(vullist)
         for service in list:
             if service[0] == '' and service[1] == '':
@@ -120,27 +120,32 @@ def vuln_search():
             else:
                 for row in reader:
                     if service[0].lower() == row[4].lower():
-                        print(row[0] + ' ' + row[4])
                         vuln.append(row[0])
+                        
     return vuln
 
 def vuln_check(vuln):
-    x = 'x'
-    y = 'y'
-    with open('modules/vullist.csv', encoding='utf8') as vullist:
+    x = 0
+    y = 0
+    with open('source/vullist.csv', encoding='utf8') as vullist:
         reader = csv.reader(vullist)
+        vulnerables = []
         for row in reader:
             if row[0] in vuln:
                 for i in range(len(str(row[5]).split(" "))):
                     if str(row[5]).split(" ")[i] == 'от':
-                        print(str(row[5]).split(" ")[i+1])
                         x = str(row[5]).split(" ")[i+1]
                     if str(row[5]).split(" ")[i] == 'до':
-                        print(str(row[5]).split(" ")[i+1])
                         y = str(row[5]).split(" ")[i+1]
-                
-                print(f'{row[4]}: {x} - {y}')
-                x = y = 0
+                    cursor.execute("""SELECT version FROM Ports WHERE product = '%s'""" % row[4].lower())
+                    version = cursor.fetchall()[0][0]
+                    if version > x and float(version) < float(y):
+                        if f'{row[0]}: {row[4]}: ({version}) {x} - {y}' in vulnerables:
+                            continue
+                        else:
+                            vulnerables.append(f'{row[0]}: {row[4]}: ({version}) {x} - {y}')
+        for i in vulnerables:
+            print(i)
                         
 
 def main():

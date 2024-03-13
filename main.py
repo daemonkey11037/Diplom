@@ -5,7 +5,7 @@ from colorama import Fore, Style
 
 def db_creation():
 
-    connection = sqlite3.connect('db.db', check_same_thread=False)
+    connection = sqlite3.connect('source/db.db', check_same_thread=False)
     cursor = connection.cursor()
 
     cursor.executescript('''CREATE TABLE IF NOT EXISTS Hosts (
