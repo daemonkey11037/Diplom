@@ -3,7 +3,6 @@ import socket
 import time
 import threading
 import sqlite3
-import re
 import csv
 
 connection = sqlite3.connect('source/db.db', check_same_thread=False)
@@ -82,9 +81,9 @@ def output():
         list.clear()
         print('-------------------------------------')
 
-def clean():
-    mode = input("Стереть запись из бд?: ")
-    if mode == '1':
+def clean(mode):
+    mode = 'Y'
+    if mode == 'Y':
         cursor.execute("""DROP TABLE Ports""")
         connection.commit()
         cursor.execute("""DROP TABLE Hosts""")
@@ -121,6 +120,8 @@ def vuln_search():
                 for row in reader:
                     if service[0].lower() == row[4].lower():
                         vuln.append(row[0])
+
+    print(vuln)
     return vuln
 
 def vuln_check(vuln):
@@ -142,16 +143,16 @@ def vuln_check(vuln):
                         if f'{row[0]}: {row[4]}: ({version}) {x} - {y}' in vulnerables:
                             continue
                         else:
-                            vulnerables.append(f'{row[0]}: {row[4]}: ({version}) {x} - {y}')
+                            vulnerables.append(f'Идентификатор уязвимости: {row[0]}\nУязвимое ПО: {row[4]} ({version})\nУязвимые версии: {x} - {y}\n{row[12]}\n--------------------')
         for i in vulnerables:
             print(i)
                         
 
-def main():
-        
-        clean()
+def main(ip):
 
-        ip = input("Введите диапозон ip-адресов: ")
+        #clean()
+
+        #ip = input("Введите диапозон ip-адресов: ")
         
         start_time = time.time()
         t1 = threading.Thread(target=portscan, args=(ip, '1-340'), daemon=True)
@@ -164,8 +165,9 @@ def main():
         t2.join()
         t3.join()
 
-        output() ########
-        print("--- %s seconds ---" % (time.time() - start_time))
+        output()
+        print("--- %s seconds ---\n" % (time.time() - start_time))
+        print('Результат сохранён! Используйте аргумент -o для просмотра текущего списка адресов!')
 
         
 # !-----Main-----!
