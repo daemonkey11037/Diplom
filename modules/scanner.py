@@ -7,7 +7,7 @@ import csv
 
 connection = sqlite3.connect('source/db.db', check_same_thread=False)
 cursor = connection.cursor()
-
+lock = threading.Lock()
 reg = '^\d+\.\d+\.\d+\.\d+&'
 
 # !-----Функция, которая сканирует хосты в сети и их порты-----!
@@ -15,29 +15,25 @@ def portscan(ip, port):
     nm = nmap.PortScanner()
     nm.scan(ip, port)
 
+    def hostadd():
+        try:
+            cursor.execute("""INSERT INTO Hosts (host, hostname, host_state) VALUES ('%s', '%s', '%s');""" % (host, socket.gethostbyaddr(host)[0], nm[host].state()))
+            connection.commit()
+        except socket.herror:
+            cursor.execute("""INSERT INTO Hosts (host, hostname, host_state) VALUES ('%s', '%s', '%s');""" % (host, '', nm[host].state()))
+            connection.commit()
+
     # !-----Определение хостов-----!
-    for host in nm.all_hosts():      
+    for host in nm.all_hosts():
         cursor.execute("""SELECT host FROM Hosts""")
-        list = cursor.fetchall()
-        if len(list) == 0:
-            try:
-                cursor.execute("""INSERT INTO Hosts (host, hostname, host_state) VALUES ('%s', '%s', '%s');""" % (host, socket.gethostbyaddr(host)[0], nm[host].state()))
-                connection.commit()
-            except socket.herror:
-                cursor.execute("""INSERT INTO Hosts (host, hostname, host_state) VALUES ('%s', '%s', '%s');""" % (host, '', nm[host].state()))
-                connection.commit()
+        list_of_hosts = cursor.fetchall()
+        if len(list_of_hosts) == 0:
+            hostadd()
         else:
-            skip = 0
-            for address in list:
-                if str(host) == str(address[0]):
-                    skip = 1
-            if skip == 0:
-                try:
-                    cursor.execute("""INSERT INTO Hosts (host, hostname, host_state) VALUES ('%s', '%s', '%s');""" % (host, socket.gethostbyaddr(host)[0], nm[host].state()))
-                    connection.commit()
-                except socket.herror:
-                    cursor.execute("""INSERT INTO Hosts (host, hostname, host_state) VALUES ('%s', '%s', '%s');""" % (host, '', nm[host].state()))
-                    connection.commit()
+            for address in list_of_hosts:
+                print(address)
+                if str(host) != str(address[0]):
+                    hostadd()
 
         # !-----Определение протокола передачи-----!
         for proto in nm[host].all_protocols():
