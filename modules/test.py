@@ -1,28 +1,7 @@
-import csv
-import re
+import tempfile
 
-def vuln_check():
-    x = 'x'
-    y = 'y'
-    with open('vullist.csv', encoding='utf8') as vullist:
-        reader = csv.reader(vullist)
-        for row in reader:
-            print('-----')
-            for i in range(len(str(row[5]).split(" "))):
-                if str(row[5]).split(" ")[i] == 'от':
-                    print(str(row[5]).split(" ")[i+1])
-                    x = str(row[5]).split(" ")[i+1]
-                if str(row[5]).split(" ")[i] == 'до':
-                    print(str(row[5]).split(" ")[i+1])
-                    y = str(row[5]).split(" ")[i+1]
-            print(x + ' - ' + y)
-            print('-----')
+with tempfile.TemporaryFile() as tmp_file:
 
-def vuln_check2():
-    with open('vullist.csv', encoding='utf8') as vullist:
-        reader = csv.DictReader(vullist)
-        for row in reader:
-            print(row)
-
-vuln_check2()#
-
+    tmp_file.write(b'192.168.0.1')
+    tmp_file.seek(0)
+    print(tmp_file.read().decode('utf-8'))
