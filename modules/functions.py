@@ -38,7 +38,7 @@ def service_check():
             [Install]
             WantedBy=multi-user.target\n"""
 
-        with open('/etc/systemd/system', 'w') as service_file:
+        with open('/etc/systemd/system/archael_macscan.service', 'w') as service_file:
             service_file.write(service_create)
 
         os.system('systemctl daemon-reload')
