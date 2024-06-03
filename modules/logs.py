@@ -2,7 +2,7 @@ import sqlite3
 from modules.functions import addr_range
 from modules.scanner import Host, Ports
 
-connection = sqlite3.connect('source/db.db', check_same_thread=False)
+connection = sqlite3.connect('/opt/archael/source/db.db', check_same_thread=False)
 cursor = connection.cursor()
 
 hosts = []

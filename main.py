@@ -5,10 +5,10 @@ from modules.functions import service_check
 from cmd2 import Cmd
 
 if service_check() == True:
-    print('Сервис успешно установлен!')
+    print('Сервис успешно создан!')
 else:
     print('Что-то пошло не так!')
-    
+
 class App(Cmd):
 
     prompt = 'archael > '

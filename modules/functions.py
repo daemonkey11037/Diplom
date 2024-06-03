@@ -17,7 +17,7 @@ def addr_range(input):
 def service_check():
 
     if 'archael_macscan.service' in subprocess.check_output('ls /etc/systemd/system', shell=True, text=True):
-        return True
+        return 0
     
     else:
         cron_path = '/opt/archael/modules/cron.py'
@@ -47,8 +47,6 @@ def service_check():
 
         try:
             subprocess.check_output("systemctl status archael_macscan.service | grep 'running'", shell=True, text=True)
-            print('Сервис успешно создан!')
             return True
         except:
-            print('Что-то пошло не так!')
             return False

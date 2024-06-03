@@ -5,7 +5,7 @@ import sqlite3
 
 reg = '^\d+\.\d+\.\d+\.\d+&'
 
-connection = sqlite3.connect('source/db.db', check_same_thread=False)
+connection = sqlite3.connect('/opt/archael/source/db.db', check_same_thread=False)
 cursor = connection.cursor()
 
 class Ports:
