@@ -46,7 +46,7 @@ def service_check():
         os.system('systemctl enable archael_macscan.service')
 
         try:
-            subprocess.check_output("systemctl status macscan.service | grep 'running'", shell=True, text=True)
+            subprocess.check_output("systemctl status archael_macscan.service | grep 'running'", shell=True, text=True)
             print('Сервис успешно создан!')
             return True
         except:
