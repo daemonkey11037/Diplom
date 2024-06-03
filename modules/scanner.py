@@ -15,12 +15,14 @@ class Ports:
         self.version = version
 
 class Host:
-    def __init__(self, host, hostname, hoststate, proto, ports):
+    def __init__(self, host, hostname, hoststate, proto, ports, date, time):
         self.host = host
         self.hostname = hostname
         self.hoststate = hoststate
         self.proto = proto
         self.ports = ports
+        self.date = date
+        self.time = time
 
 hosts = []
 

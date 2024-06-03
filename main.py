@@ -24,11 +24,19 @@ class App(Cmd):
         app = Scan()
         app.cmdloop()
 
-    def do_view(self, args):
+    def do_vulncheck(self, args):
         vulncheck.main()
 
     def do_logs(self, args):
-        logs.main()
+        
+        class Logs(Cmd):
+            prompt = 'archael logs() > '
+
+            def do_host(self, args):
+                logs.main(str(args))
+
+        app = Logs()
+        app.cmdloop()
 
     def do_clean(self, args):
         scanner.clean(args)
