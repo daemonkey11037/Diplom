@@ -72,3 +72,4 @@ def output(input):
 def main(input):
     catch()
     output(input)
+    hosts.clear()
