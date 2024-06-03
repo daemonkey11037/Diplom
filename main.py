@@ -6,7 +6,7 @@ from cmd2 import Cmd
 
 if service_check() == True:
     print('Сервис успешно создан!')
-else:
+elif service_check() == False:
     print('Что-то пошло не так!')
 
 class App(Cmd):
