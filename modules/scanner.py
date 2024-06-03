@@ -66,7 +66,7 @@ def portscan(ip, port):
             for port in lport:
                 ports.append(Ports(port=port, product=nm[host][proto][port]['name'], version=nm[host][proto][port]['version']))
 
-        hosts.append(Host(host=host, hostname=hostname_check(host), hoststate=nm[host].state(), proto=0, ports=ports))
+        hosts.append(Host(host=host, hostname=hostname_check(host), hoststate=nm[host].state(), proto=0, ports=ports, date=str(time.strftime("%d.%m.%Y")), time=str(time.strftime("%H:%M:%S"))))
 
 def db_add():
     for host in hosts:
@@ -76,8 +76,8 @@ def db_add():
         if en == []:
 
             cursor.execute(f"""INSERT INTO Hosts (host, hostname, host_state, protocol, date, time) VALUES ('{host.host}',
-            '{host.hostname}', '{host.hoststate}', '{host.proto}', '{str(time.strftime("%d.%m.%Y"))}',
-            '{str(time.strftime("%H:%M:%S"))}')""")
+            '{host.hostname}', '{host.hoststate}', '{host.proto}', '{host.date}',
+            '{host.time}')""")
             connection.commit()
 
             cursor.execute(f"""SELECT id from Hosts WHERE host = '{host.host}'""")
@@ -90,7 +90,7 @@ def db_add():
         else:
 
             cursor.execute(f"""UPDATE Hosts SET hostname = '{host.hostname}', host_state = '{host.hoststate}',
-            date = '{str(time.strftime("%d.%m.%Y"))}', time = '{str(time.strftime("%H:%M:%S"))}' WHERE host = '{host.host}'""")
+            date = '{host.date}', time = '{host.time}' WHERE host = '{host.host}'""")
             connection.commit()
 
             cursor.execute(f"""SELECT id from Hosts WHERE host = '{host.host}'""")
