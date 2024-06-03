@@ -1,11 +1,14 @@
 import modules.scanner as scanner
 import modules.vulncheck as vulncheck
 import modules.logs as logs
-import sqlite3
-from colorama import Fore, Style
+from modules.functions import service_check
 from cmd2 import Cmd
 
-
+if service_check() == True:
+    print('Сервис успешно установлен!')
+else:
+    print('Что-то пошло не так!')
+    
 class App(Cmd):
 
     prompt = 'archael > '
